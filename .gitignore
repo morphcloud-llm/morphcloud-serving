@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+*.pem
+*.key
+configs/predictor_weights.*
+evaluation/results/*
+!evaluation/results/.gitkeep
+data/traces/raw/
+data/traces/private/

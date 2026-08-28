@@ -1,0 +1,40 @@
+# Local control-plane smoke test.
+# This does not include the GPU/vLLM experiment data plane.
+services:
+  morphcloud-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.control-plane
+    image: morphcloud-llm-control-plane:local
+    container_name: morphcloud_server
+    environment:
+      MORPHCLOUD_MODEL: meta-llama/Llama-2-7b-hf
+      MORPHCLOUD_BACKEND: local
+      MORPHCLOUD_CHECKPOINT_BACKEND: filesystem
+      MORPHCLOUD_CHECKPOINT_PATH: /data/kv-cache
+    command:
+      - python
+      - -m
+      - morphcloud.serving.server
+      - --model
+      - $${MORPHCLOUD_MODEL}
+      - --checkpoint-backend
+      - filesystem
+      - --checkpoint-path
+      - /data/kv-cache
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8080"
+    ports:
+      - "8080:8080"
+    volumes:
+      - morphcloud-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  morphcloud-data:

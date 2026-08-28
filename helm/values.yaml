@@ -1,0 +1,13 @@
+image:
+  repository: morphcloud-llm-control-plane
+  tag: local
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+server:
+  model: meta-llama/Llama-2-7b-hf
+  checkpointBackend: filesystem
+  checkpointPath: /tmp/morphcloud-kv

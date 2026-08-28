@@ -1,0 +1,87 @@
+# MorphCloud-LLM Helm Chart Values — AWS Deployment
+# Matches the hardware configuration in Table 4 of the paper.
+
+# Primary spot instances: 8x A100-80GB (p4d.24xlarge)
+spotInstances:
+  enabled: true
+  instanceType: p4d.24xlarge
+  count: 8
+  gpuType: A100-80GB
+  region: us-east-1
+  availabilityZone: us-east-1a
+  maxSpotPrice: ""           # empty = use current spot price
+  tensorParallelDegree: 8
+
+# On-demand fallback nodes: 4x A10G (g5.xlarge, 96 GB VRAM total)
+# Maintain pre-staged model weights in GPU memory at all times.
+# T_weight_load = 0 ms: eliminates the dominant cost in competing systems.
+fallbackNodes:
+  enabled: true
+  instanceType: g5.xlarge
+  count: 4
+  gpuType: A10G
+  vramPerNodeGB: 24
+  totalVramGB: 96
+  tensorParallelDegree: 4
+  preloadWeights: true       # required for 0 ms model loading (Table 11)
+  warmStandby: true
+  warmStandbyCostPerHour: 0.92  # USD/h per Section 4.6 / Table 7
+
+# Disaggregated KV-cache storage: S3 Express One Zone
+storage:
+  backend: s3
+  s3Bucket: morphcloud-kv-cache
+  s3Region: us-east-1
+  s3ExpressOneZone: true     # same AZ endpoint for minimum round-trip latency
+  costPerGBMonth: 0.023
+  checkpointInterval: 16     # delta in decoding steps (Equation 3)
+  baseSnapshotEpoch: 512     # full snapshot refresh every N tokens
+
+# Network: 100 Gbps EFA for primary spot instances
+network:
+  type: EFA
+  bandwidthGbps: 100         # p4d.24xlarge EFA; fallback uses ENA (~12 Gbps effective)
+  fallbackBandwidthGbps: 12  # measured effective throughput on g5.xlarge VPC endpoint
+
+# Preemption predictor
+predictor:
+  model: xgboost
+  weightsPath: configs/predictor_weights.pkl
+  predictionHorizonS: 30
+  confidenceThreshold: 0.7
+  loadSensitivity: 0.3       # lambda in Equation 13
+  retrainIntervalDays: 7
+
+# Serving configuration
+serving:
+  framework: vllm
+  vllmVersion: "0.4.2"
+  pytorchVersion: "2.3"
+  cudaVersion: "12.4"
+  primaryPrecision: fp16
+  fallbackPrecision: int8    # INT8 on fallback nodes to fit VRAM (Table 1)
+
+# Models evaluated in the paper (Table 4)
+models:
+  - name: llama-70b
+    huggingfaceId: meta-llama/Llama-2-70b-hf
+    parameters: 70B
+    layers: 80
+    kvHeads: 8               # GQA
+    headDim: 128
+  - name: mixtral-8x7b
+    huggingfaceId: mistralai/Mixtral-8x7B-v0.1
+    parameters: 46.7B        # active parameters
+    layers: 32
+
+# Cost accounting (Table 7)
+costAccounting:
+  spotGpuPerHour: 8.24
+  onDemandGpuActivePerHour: 1.12
+  onDemandGpuStandbyPerHour: 0.92
+  storagePerHour: 0.45
+  networkPerHour: 0.08
+  totalActivePerHour: 9.89
+  totalFullPerHour: 10.81
+  costReductionActivePct: 69.8
+  costReductionFullPct: 67.0

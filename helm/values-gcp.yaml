@@ -1,0 +1,57 @@
+# MorphCloud-LLM Helm Chart Values — GCP Deployment
+# Matches the GCP hardware configuration in Table 4 of the paper.
+
+# Primary spot instances: 8x A100-80GB (a2-highgpu-8g preemptible VMs)
+spotInstances:
+  enabled: true
+  machineType: a2-highgpu-8g
+  count: 8
+  gpuType: A100-80GB
+  acceleratorType: nvidia-tesla-a100
+  region: us-central1
+  zone: us-central1-a
+  preemptible: true
+  tensorParallelDegree: 8
+  noticeWindowS: 30          # GCP 30-second shutdown signal (vs AWS 2-min)
+
+# On-demand fallback nodes: 8x T4 (n1-standard-8-t4, 128 GB VRAM total)
+# 8-way tensor parallelism for both LLaMA-70B and Mixtral-8x7B in INT8.
+fallbackNodes:
+  enabled: true
+  machineType: n1-standard-8
+  acceleratorType: nvidia-tesla-t4
+  count: 8
+  gpuType: T4
+  vramPerNodeGB: 16
+  totalVramGB: 128
+  tensorParallelDegree: 8
+  preloadWeights: true
+  warmStandby: true
+
+# Disaggregated KV-cache storage: GCS regional endpoint
+storage:
+  backend: gcs
+  gcsBucket: morphcloud-kv-cache-gcp
+  gcsRegion: us-central1
+  regionalEndpoint: true     # regional endpoint for minimum round-trip latency
+  checkpointInterval: 16
+  baseSnapshotEpoch: 512
+
+# Network: 100 Gbps gVNIC
+network:
+  type: gVNIC
+  bandwidthGbps: 100
+
+# Serving configuration
+serving:
+  framework: vllm
+  vllmVersion: "0.4.2"
+  pytorchVersion: "2.3"
+  cudaVersion: "12.4"
+  primaryPrecision: fp16
+  fallbackPrecision: int8    # INT8 for both models on T4 (Table 1)
+
+# Spot discount range (Table 4)
+spotDiscount:
+  minPct: 65
+  maxPct: 72
