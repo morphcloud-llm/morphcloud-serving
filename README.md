@@ -188,8 +188,6 @@ Raw/private telemetry should be kept under `data/traces/raw/`, which is excluded
 
 ## Citation
 
-## Citation
-
 If you use MorphCloud-LLM, please cite the published article:
 
 > Jari, H. MorphCloud-LLM: Elastic Spot-Instance-Aware LLM Serving with Transparent Preemption Recovery and Speculative Decoding Continuity. *Electronics* **2026**, *15*(17), 3865. https://doi.org/10.3390/electronics15173865
