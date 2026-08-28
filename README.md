@@ -1,10 +1,14 @@
 # MorphCloud-LLM: Elastic Spot-Instance-Aware LLM Serving with Transparent Preemption Recovery and Speculative Decoding Continuity
 
-[![Electronics](https://img.shields.io/badge/Journal-Electronics%20(MDPI)-blue)](https://www.mdpi.com/journal/electronics)
+[![Electronics](https://img.shields.io/badge/Published-Electronics%20(MDPI)-blue)](https://www.mdpi.com/2079-9292/15/17/3865)
+[![DOI](https://img.shields.io/badge/DOI-10.3390%2Felectronics15173865-blue)](https://doi.org/10.3390/electronics15173865)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-green)](https://www.python.org/)
 
-Research artifact accompanying **MorphCloud-LLM**. The manuscript reports up to **76% cost reduction** (69.8% for LLaMA-70B on the active-serving accounting basis; 67% when warm standby is included) and zero dropped requests across 521 trace-injected preemption events under the evaluated conditions.
+Research artifact accompanying the published article **MorphCloud-LLM: Elastic Spot-Instance-Aware LLM Serving with Transparent Preemption Recovery and Speculative Decoding Continuity**, published in *Electronics* (2026), Volume 15, Issue 17, Article 3865.
+
+**Paper:** https://www.mdpi.com/2079-9292/15/17/3865  
+**DOI:** https://doi.org/10.3390/electronics15173865
 
 ## What is in this repository
 
@@ -184,14 +188,23 @@ Raw/private telemetry should be kept under `data/traces/raw/`, which is excluded
 
 ## Citation
 
-The manuscript was prepared for *Electronics* (MDPI). Replace the placeholder below with the final bibliographic metadata/DOI after publication; no fabricated DOI is included in this repository.
+## Citation
+
+If you use MorphCloud-LLM, please cite the published article:
+
+> Jari, H. MorphCloud-LLM: Elastic Spot-Instance-Aware LLM Serving with Transparent Preemption Recovery and Speculative Decoding Continuity. *Electronics* **2026**, *15*(17), 3865. https://doi.org/10.3390/electronics15173865
 
 ```bibtex
-@article{morphcloud2026,
+@article{Jari2026MorphCloudLLM,
+  author  = {Jari, Hassan},
   title   = {MorphCloud-LLM: Elastic Spot-Instance-Aware LLM Serving with Transparent Preemption Recovery and Speculative Decoding Continuity},
   journal = {Electronics},
   year    = {2026},
-  note    = {Final volume, article number, and DOI to be added after publication}
+  volume  = {15},
+  number  = {17},
+  pages   = {3865},
+  doi     = {10.3390/electronics15173865},
+  url     = {https://www.mdpi.com/2079-9292/15/17/3865}
 }
 ```
 
