@@ -1,0 +1,25 @@
+yaml
+cff-version: 1.2.0
+message: "If you use this software, please cite the published MorphCloud-LLM paper."
+title: "MorphCloud-LLM"
+type: software
+
+authors:
+  - family-names: "Jari"
+    given-names: "Hassan"
+
+repository-code: "https://github.com/morphcloud-llm/morphcloud-serving"
+url: "https://www.mdpi.com/2079-9292/15/17/3865"
+
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Jari"
+      given-names: "Hassan"
+  title: "MorphCloud-LLM: Elastic Spot-Instance-Aware LLM Serving with Transparent Preemption Recovery and Speculative Decoding Continuity"
+  journal: "Electronics"
+  year: 2026
+  volume: 15
+  issue: 17
+  doi: "10.3390/electronics15173865"
+  url: "https://www.mdpi.com/2079-9292/15/17/3865"
